@@ -29,7 +29,7 @@ const nid = [
 async function main() {
   try {
     const mqttClient = mqtt.connect(
-      //      'mqtt://ec2-18-218-2-29.us-east-2.compute.amazonaws.com',
+     // 'mqtt://ec2-3-15-17-45.us-east-2.compute.amazonaws.com',
       'mqtt://localhost',
     );
     const client = opcua.OPCUAClient.create({
