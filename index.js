@@ -6,7 +6,7 @@ const endpointUrl = 'opc.tcp://10.1.2.37:49321';
 // 'opc.tcp://BUSCHE-ALB-KORS.BUSCHE-CNC.com:49321';
 // 'opc.tcp://BUSCHE-ALB-KORS.BUSCHE-CNC.com:49320';
 // 'opc.tcp://bgroves-desk:49320'; // very slow on home wifi
-// 'opc.tcp://bgroves_desk.busche-cnc.com:49320'; 
+// 'opc.tcp://bgroves_desk.busche-cnc.com:49320';
 // 'opc.tcp://192.168.254.15:49320';
 // 'opc.tcp://10.1.1.193:49320';
 // const endpointUrl = "opc.tcp://" + require("os").hostname() + ":48010";
@@ -14,15 +14,15 @@ const endpointUrl = 'opc.tcp://10.1.2.37:49321';
 const nid = [
   // 'ns=2;s=CNC360.CNC360.Cycle_Counter_Shift_SL',
   {
-      PCN:'Avilla',
+    PCN: 'Avilla',
     NodeId: 'ns=2;s=CNC362.CNC362.Cycle_Counter_Shift_SL',
-    WorkCenter: 61314
+    WorkCenter: 61314,
   },
   {
-      PCN:'Avilla',
+    PCN: 'Avilla',
     NodeId: 'ns=2;s=CNC422.CNC422.Cycle_Counter_Shift_SL',
-    WorkCenter: 61420
-  }
+    WorkCenter: 61420,
+  },
   // "ns=2;s=CNC289.CNC289.Axes(Maxes1).Linear(Mx1).X1actm",
   // "ns=2;s=CNC289.CNC289.Axes(Maxes1).Rotary(Mc1).S1load"
 ];
@@ -85,24 +85,24 @@ async function main() {
           queueSize: 1,
           discardOldest: true,
         },
-        opcua.TimestampsToReturn.Both,
+        opcua.TimestampsToReturn.Both, // These values are in GMT.
       );
       monitoredItem.push(mi);
       monitoredItem[i].on('changed', dataValue => {
         let Cycle_Counter_Shift_SL = parseInt(dataValue.value.value.toString());
         debugger;
-          let msg = {
-              PCN:nid[i].PCN,
-              WorkCenter:nid[i].WorkCenter,
-              Cycle_Counter_Shift_SL:Cycle_Counter_Shift_SL
-          }
-            let msgString=JSON.stringify(msg);
+        let msg = {
+          PCN: nid[i].PCN,
+          WorkCenter: nid[i].WorkCenter,
+          Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL,
+        };
+        let msgString = JSON.stringify(msg);
 
         console.log(`${nid[i].NodeId} = ${dataValue.value.value.toString()}`);
-          console.log(msg);
+        console.log(msg);
         // mqttClient.publish('CNC422/Cycle_Counter_Shift_SL',Cycle_Counter_Shift_SL);
         // mqttClient.publish(nid[i].WorkCenter, Cycle_Counter_Shift_SL);
-        mqttClient.publish("Kep13318",msgString);
+        mqttClient.publish('Kep13318', msgString);
       });
     }
   } catch (err) {
