@@ -1,0 +1,24 @@
+{
+  "name": "Kep13318",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brentgroves/Kep13318.git"
+  },
+  "keywords": [],
+  "author": "Brent Groves <brent.groves@gmail.com> (http://makercountry.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brentgroves/Kep13318/issues"
+  },
+  "homepage": "https://github.com/brentgroves/Kep13318#readme",
+  "dependencies": {
+    "mqtt": "^3.0.0",
+    "node-opcua": "^2.2.0"
+  }
+}
