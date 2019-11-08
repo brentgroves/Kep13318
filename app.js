@@ -1,8 +1,9 @@
 const opcua = require('node-opcua');
 const mqtt = require('mqtt');
-
+const config = require('../Config13318/config.json')
 //https://github.com/node-opcua/node-opcua/blob/master/packages/node-opcua-client/source/opcua_client.ts
-const endpointUrl = 'opc.tcp://10.1.2.37:49321';
+const endpointUrl = config.OPCUA;
+// 'opc.tcp://10.1.2.37:49321';
 // 'opc.tcp://BUSCHE-ALB-KORS.BUSCHE-CNC.com:49321';
 // 'opc.tcp://BUSCHE-ALB-KORS.BUSCHE-CNC.com:49320';
 // 'opc.tcp://bgroves-desk:49320'; // very slow on home wifi
@@ -28,9 +29,7 @@ const nid = [
 ];
 async function main() {
   try {
-    const mqttClient = mqtt.connect(
-     'mqtt://ec2-3-15-151-115.us-east-2.compute.amazonaws.com',
-      // 'mqtt://localhost',
+    const mqttClient = mqtt.connect(`${config.MQTT}`
     );
     const client = opcua.OPCUAClient.create({
       endpoint_must_exist: false,
@@ -90,7 +89,6 @@ async function main() {
       monitoredItem.push(mi);
       monitoredItem[i].on('changed', dataValue => {
         let Cycle_Counter_Shift_SL = parseInt(dataValue.value.value.toString());
-        debugger;
         let msg = {
           PCN: nid[i].PCN,
           WorkCenter: nid[i].WorkCenter,
@@ -100,8 +98,6 @@ async function main() {
 
         console.log(`${nid[i].NodeId} = ${dataValue.value.value.toString()}`);
         console.log(msg);
-        // mqttClient.publish('CNC422/Cycle_Counter_Shift_SL',Cycle_Counter_Shift_SL);
-        // mqttClient.publish(nid[i].WorkCenter, Cycle_Counter_Shift_SL);
         mqttClient.publish('Kep13318', msgString);
       });
     }
@@ -112,26 +108,3 @@ async function main() {
 
 main();
 
-// http://node-opcua.github.io/api_doc/2.0.0/interfaces/clientmonitoreditembase.html
-//github.com/node-opcua/node-opcua/blob/db4953536772a4b3fa501ce7961fdc400c0b5e82/test/test_opcua_ClientServer_UserNameIdentityToken.js#L39onst userIdentityToken = new s.UserNameIdentityToken({
-//https://github.com/node-opcua/node-opcua/blob/master/packages/node-opcua-client/source/client_session.ts
-// const browseResult = await session.browse('ns=2;s=CNC103.CNC103.CNC103');
-// console.log('Browsing rootfolder: ');
-// for (let reference of browseResult.references) {
-//   console.log(reference.browseName.toString(), reference.nodeId.toString());
-// }
-// const dataValue = await session.read({
-//   nodeId: nid[0],
-//   attributeId: opcua.AttributeIds.Value,
-// });
-// console.log(` Part Counter CNC 103 = ${dataValue.value.value.toString()}`);
-
-//const dataValue2 = await session.readVariableValue(nid[1]);
-// for (let i=0;i<nid.length;i++) {
-//     console.log(nid[i])
-//   let dataValue3 = await session.readVariableValue(nid[i]);
-//   console.log(` part_count = ${dataValue3.value.value.toString()}`);
-// }
-// step 5: install a subscription and monitored item
-
-//    https://github.com/node-opcua/node-opcua/blob/master/packages/node-opcua-client/source/client_subscription.ts
