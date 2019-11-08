@@ -20,5 +20,8 @@
   "dependencies": {
     "mqtt": "^3.0.0",
     "node-opcua": "^2.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
   }
 }
