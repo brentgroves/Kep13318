@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "all": "concurrently \"cd ../Plex13318 && node app\" \"cd ../MySql13318 && node app\" \"cd ../Socket13318 && node app\"  \"cd ../Express && npm start\" \"node app\""
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/brentgroves/Kep13318#readme",
   "dependencies": {
+    "concurrently": "^5.0.0",
     "mqtt": "^3.0.0",
     "node-opcua": "^2.2.0"
   },
