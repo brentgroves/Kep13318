@@ -12,21 +12,6 @@ const endpointUrl = config.OPCUA;
 // 'opc.tcp://10.1.1.193:49320';
 // const endpointUrl = "opc.tcp://" + require("os").hostname() + ":48010";
 
-const nid = [
-  // 'ns=2;s=CNC360.CNC360.Cycle_Counter_Shift_SL',
-  {
-    PCN: 'Avilla',
-    NodeId: 'ns=2;s=CNC362.CNC362.Cycle_Counter_Shift_SL',
-    WorkCenter: 61314,
-  },
-  {
-    PCN: 'Avilla',
-    NodeId: 'ns=2;s=CNC422.CNC422.Cycle_Counter_Shift_SL',
-    WorkCenter: 61420,
-  },
-  // "ns=2;s=CNC289.CNC289.Axes(Maxes1).Linear(Mx1).X1actm",
-  // "ns=2;s=CNC289.CNC289.Axes(Maxes1).Rotary(Mc1).S1load"
-];
 async function main() {
   try {
     const mqttClient = mqtt.connect(`${config.MQTT}`
@@ -70,10 +55,10 @@ async function main() {
 
     // http://node-opcua.github.io/api_doc/2.0.0/classes/clientsubscription.html#monitor
     var monitoredItem = [];
-    for (let i = 0; i < nid.length; i++) {
+    for (let i = 0; i < config.Nid.length; i++) {
       let mi = await subscription.monitor(
         {
-          nodeId: nid[i].NodeId,
+          nodeId: config.Nid[i].NodeId,
           attributeId: opcua.AttributeIds.Value,
           indexRange: null,
           dataEncoding: {namespaceIndex: 0, name: null},
@@ -88,15 +73,24 @@ async function main() {
       );
       monitoredItem.push(mi);
       monitoredItem[i].on('changed', dataValue => {
+      let date_ob = new Date();
+      let date = ('0' + date_ob.getDate()).slice(-2);
+      let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let minutes = date_ob.getMinutes();
+      let seconds = date_ob.getSeconds();
+      let TransDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+
         let Cycle_Counter_Shift_SL = parseInt(dataValue.value.value.toString());
         let msg = {
-          PCN: nid[i].PCN,
-          WorkCenter: nid[i].WorkCenter,
-          Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL,
+          PCN: config.Nid[i].PCN,
+          TransDate: TransDate,
+          WorkCenter: config.Nid[i].WorkCenter,
+          NodeId: config.Nid[i].NodeId,
+          Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL
         };
         let msgString = JSON.stringify(msg);
-
-        console.log(`${nid[i].NodeId} = ${dataValue.value.value.toString()}`);
         console.log(msg);
         mqttClient.publish('Kep13318', msgString);
       });
