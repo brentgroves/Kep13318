@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "concurrently \"cd ../Plex13318 && node app\" \"cd ../MySql13318 && node app\" \"cd ../Socket13318 && node app\"  \"cd ../Express && npm start\" \"node app\""
+    "all": "concurrently \"cd ../BPGServices && node app\" \"cd ../MySql13318 && node app\" \"cd ../Periodic13318 && node app\" \"cd ../Plex13318 && node app\" \"cd ../Express && npm start\" \"node app\""
   },
   "repository": {
     "type": "git",
