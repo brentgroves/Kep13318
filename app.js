@@ -1,6 +1,6 @@
 const opcua = require('node-opcua');
 const mqtt = require('mqtt');
-const config = require('../Config13318/config.json')
+const config = require('../Config13318/config.json');
 //https://github.com/node-opcua/node-opcua/blob/master/packages/node-opcua-client/source/opcua_client.ts
 const endpointUrl = config.OPCUA;
 // 'opc.tcp://10.1.2.37:49321';
@@ -14,8 +14,7 @@ const endpointUrl = config.OPCUA;
 
 async function main() {
   try {
-    const mqttClient = mqtt.connect(`${config.MQTT}`
-    );
+    const mqttClient = mqtt.connect(`${config.MQTT}`);
     const client = opcua.OPCUAClient.create({
       endpoint_must_exist: false,
     });
@@ -55,10 +54,10 @@ async function main() {
 
     // http://node-opcua.github.io/api_doc/2.0.0/classes/clientsubscription.html#monitor
     var monitoredItem = [];
-    for (let i = 0; i < config.Nid.length; i++) {
+    for (let i = 0; i < config.NodeId.length; i++) {
       let mi = await subscription.monitor(
         {
-          nodeId: config.Nid[i].NodeId,
+          nodeId: config.NodeId[i].NodeId,
           attributeId: opcua.AttributeIds.Value,
           indexRange: null,
           dataEncoding: {namespaceIndex: 0, name: null},
@@ -73,22 +72,22 @@ async function main() {
       );
       monitoredItem.push(mi);
       monitoredItem[i].on('changed', dataValue => {
-      let date_ob = new Date();
-      let date = ('0' + date_ob.getDate()).slice(-2);
-      let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
-      let year = date_ob.getFullYear();
-      let hours = date_ob.getHours();
-      let minutes = date_ob.getMinutes();
-      let seconds = date_ob.getSeconds();
-      let TransDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+        let date_ob = new Date();
+        let date = ('0' + date_ob.getDate()).slice(-2);
+        let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours();
+        let minutes = date_ob.getMinutes();
+        let seconds = date_ob.getSeconds();
+        let TransDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 
         let Cycle_Counter_Shift_SL = parseInt(dataValue.value.value.toString());
         let msg = {
-          PCN: config.Nid[i].PCN,
+          PCN: config.NodeId[i].PCN,
           TransDate: TransDate,
-          WorkCenter: config.Nid[i].WorkCenter,
-          NodeId: config.Nid[i].NodeId,
-          Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL
+          WorkCenter: config.NodeId[i].WorkCenter,
+          NodeId: config.NodeId[i].NodeId,
+          Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL,
         };
         let msgString = JSON.stringify(msg);
         console.log(msg);
@@ -101,4 +100,3 @@ async function main() {
 }
 
 main();
-
