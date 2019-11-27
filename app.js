@@ -1,6 +1,7 @@
 const opcua = require('node-opcua');
 const mqtt = require('mqtt');
 const config = require('../Config13318/config.json');
+var datetime = require('node-datetime');
 //https://github.com/node-opcua/node-opcua/blob/master/packages/node-opcua-client/source/opcua_client.ts
 const endpointUrl = config.OPCUA;
 // 'opc.tcp://10.1.2.37:49321';
@@ -72,19 +73,13 @@ async function main() {
       );
       monitoredItem.push(mi);
       monitoredItem[i].on('changed', dataValue => {
-        let date_ob = new Date();
-        let date = ('0' + date_ob.getDate()).slice(-2);
-        let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
-        let year = date_ob.getFullYear();
-        let hours = date_ob.getHours();
-        let minutes = date_ob.getMinutes();
-        let seconds = date_ob.getSeconds();
-        let TransDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+        var dt = datetime.create();
+        var transDate = dt.format('Y-m-d H:M:S');
 
         let Cycle_Counter_Shift_SL = parseInt(dataValue.value.value.toString());
         let msg = {
           PCN: config.NodeId[i].PCN,
-          TransDate: TransDate,
+          TransDate: transDate,
           WorkCenter: config.NodeId[i].WorkCenter,
           NodeId: config.NodeId[i].NodeId,
           Cycle_Counter_Shift_SL: Cycle_Counter_Shift_SL,
