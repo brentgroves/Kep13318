@@ -1,2 +1,2 @@
 #!/bin/bash
-( node ~/srcnode/Kep13318 && node ~/srcnode/Plex13318/app.js & node ~/srcnode/MySql13318/app.js & node ~/srcnode/Socket13318/app.js & node ~/srcnode/Express/app.js )  > /dev/null 2>&1 
+( cd ~/srcnode/kors/bpg-services && npm start & cd ~/srcnode/kors/React13318 && npm start & node ~/srcnode/kors/Kep13318/app.js & node ~/srcnode/kors/Plex13318/app.js & node ~/srcnode/kors/MySql13318/app.js  )  > /dev/null 2>&1 
